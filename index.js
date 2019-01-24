@@ -197,6 +197,7 @@ module.exports = (api, options) => {
   }
 
   const runBuild = async (platform, args) => {
+    console.log(args)
     // add cordova.js, define process.env.CORDOVA_PLATFORM
     chainWebPack(platform)
     // set build output folder
