@@ -206,7 +206,7 @@ module.exports = (api, options) => {
     // cordova clean
     await cordovaClean()
     // cordova build --release (if you want a build debug build, use cordovaBuild(platform, false)
-    await cordovaBuild(platform)
+    await cordovaBuild(platform, args.mode)
   }
 
   const runPrepare = async (args) => {
