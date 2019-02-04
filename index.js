@@ -61,16 +61,18 @@ module.exports = (api, options) => {
   const cordovaBuild = (platform, release = true, device = false) => {
     // cordova run platform
     const cordovaMode = release ? '--release' : '--debug'
-    const cordovaDevice = device ? '--device' : '--0'
-    const cordovaVerbose = release ? '--0' : '--verbose'
+
+    var cordovaArgs = []
+    cordovaArgs.push('build')
+    cordovaArgs.push(platform)
+    cordovaArgs.push(cordovaMode)
+    if (device)
+      cordovaArgs.push(device)
+    if (release)
+      cordovaArgs.push(verbose)
+
     info(`executing "cordova build ${platform} ${cordovaMode} ${cordovaDevice}" in folder ${srcCordovaPath}`)
-    return spawn.sync('cordova', [
-      'build',
-      platform,
-      cordovaMode,
-      cordovaDevice,
-      cordovaVerbose
-    ], {
+    return spawn.sync('cordova', cordovaArgs, {
       cwd: srcCordovaPath,
       env: process.env,
       stdio: 'inherit', // pipe to console
