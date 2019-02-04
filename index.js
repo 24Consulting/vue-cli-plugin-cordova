@@ -58,14 +58,16 @@ module.exports = (api, options) => {
     })
   }
 
-  const cordovaBuild = (platform, release = true) => {
+  const cordovaBuild = (platform, release = true, device = false) => {
     // cordova run platform
     const cordovaMode = release ? '--release' : '--debug'
-    info(`executing "cordova build ${platform} ${cordovaMode}" in folder ${srcCordovaPath}`)
+    const cordovaDevice = device ? '--device' : ''
+    info(`executing "cordova build ${platform} ${cordovaMode} ${cordovaDevice}" in folder ${srcCordovaPath}`)
     return spawn.sync('cordova', [
       'build',
       platform,
-      cordovaMode
+      cordovaMode,
+      cordovaDevice
     ], {
       cwd: srcCordovaPath,
       env: process.env,
@@ -206,7 +208,7 @@ module.exports = (api, options) => {
     // cordova clean
     await cordovaClean()
     // cordova build --release (if you want a build debug build, use cordovaBuild(platform, false)
-    await cordovaBuild(platform, args.mode)
+    await cordovaBuild(platform, args.mode, args.device)
   }
 
   const runPrepare = async (args) => {
