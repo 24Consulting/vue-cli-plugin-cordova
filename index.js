@@ -58,16 +58,15 @@ module.exports = (api, options) => {
     })
   }
 
-  const cordovaBuild = (platform, release = true, device = false) => {
+  const cordovaBuild = (platform, args) => {
     // cordova run platform
-    const cordovaMode = release ? '--release' : '--debug'
-    const cordovaDevice = device ? '--device' : ''
-    info(`executing "cordova build ${platform} ${cordovaMode} ${cordovaDevice}" in folder ${srcCordovaPath}`)
+    const cordovaArgs = args !== undefined ? args : ''
+
+    info(`executing "cordova build ${platform} ${args}" in folder ${srcCordovaPath}`)
     return spawn.sync('cordova', [
       'build',
       platform,
-      cordovaMode,
-      cordovaDevice
+      cordovaArgs
     ], {
       cwd: srcCordovaPath,
       env: process.env,
@@ -202,13 +201,14 @@ module.exports = (api, options) => {
     // add cordova.js, define process.env.CORDOVA_PLATFORM
     chainWebPack(platform)
     // set build output folder
-    args.dest = cordovaPath + '/www'
+    var apiArgs = {}
+    apiArgs.dest = cordovaPath + '/www'
     // build
-    await api.service.run('build', args)
+    await api.service.run('build', apiArgs)
     // cordova clean
     await cordovaClean()
     // cordova build --release (if you want a build debug build, use cordovaBuild(platform, false)
-    await cordovaBuild(platform, args.mode, args.device)
+    await cordovaBuild(platform, args)
   }
 
   const runPrepare = async (args) => {
