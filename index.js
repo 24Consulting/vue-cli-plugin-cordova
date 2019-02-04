@@ -71,7 +71,7 @@ module.exports = (api, options) => {
     if (release)
       cordovaArgs.push('--verbose')
 
-    info(`executing "cordova build ${platform} ${cordovaMode} ${device}" in folder ${srcCordovaPath}`)
+    info(`executing "cordova build ${cordovaArgs.join(' ')}" in folder ${srcCordovaPath}`)
     return spawn.sync('cordova', cordovaArgs, {
       cwd: srcCordovaPath,
       env: process.env,
