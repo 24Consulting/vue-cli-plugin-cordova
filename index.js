@@ -67,7 +67,7 @@ module.exports = (api, options) => {
     cordovaArgs.push(platform)
     cordovaArgs.push(cordovaMode)
     if (device)
-      cordovaArgs.push(device)
+      cordovaArgs.push('--device')
     if (release)
       cordovaArgs.push('--verbose')
 
