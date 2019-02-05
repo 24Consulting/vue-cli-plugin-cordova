@@ -227,6 +227,15 @@ module.exports = (api, options) => {
     await cordovaPrepare()
   }
 
+  const runPrepareWWW = async (platform, args) => {
+    // add cordova.js, define process.env.CORDOVA_PLATFORM
+    chainWebPack(platform)
+    // set build output folder
+    args.dest = cordovaPath + '/www'
+    // build
+    await api.service.run('build', args)
+  }
+
   const configureDevServer = platform => {
     api.configureDevServer(app => {
       // /cordova.js should resolve to platform cordova.js
@@ -283,6 +292,14 @@ module.exports = (api, options) => {
 
   api.registerCommand('cordova-build-ios', async args => {
     return await runBuild('ios', args)
+  })
+
+  api.registerCommand('cordova-prepare-www-ios', async args => {
+    return await runPrepareWWW('ios', args)
+  })
+
+  api.registerCommand('cordova-prepare-www-android', async args => {
+    return await runPrepareWWW('android', args)
   })
 
   api.registerCommand('cordova-serve-browser', async args => {
