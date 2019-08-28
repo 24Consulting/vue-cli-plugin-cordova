@@ -31,12 +31,13 @@ module.exports = (api, options) => {
     return api.resolve(`${cordovaPath}/config.xml`)
   }
 
-  const cordovaRun = platform => {
+  const cordovaRun = (platform, pathBuildConfig) => {
     // cordova run platform
-    info(`executing "cordova run ${platform}" in folder ${srcCordovaPath}`)
+    info(`executing "cordova run ${platform} --buildConfig ${pathBuildConfig}" in folder ${srcCordovaPath}`)
     return spawn.sync('cordova', [
       'run',
-      platform
+      platform,
+      `--buildConfig=${pathBuildConfig}`
     ], {
       cwd: srcCordovaPath,
       env: process.env,
@@ -58,7 +59,7 @@ module.exports = (api, options) => {
     })
   }
 
-  const cordovaBuild = (platform, release = true, device = false) => {
+  const cordovaBuild = (platform, release = true, device = false, pathBuildConfig = '') => {
     // cordova run platform
     const cordovaMode = release ? '--release' : '--debug'
 
@@ -66,12 +67,13 @@ module.exports = (api, options) => {
     cordovaArgs.push('build')
     cordovaArgs.push(platform)
     cordovaArgs.push(cordovaMode)
+    cordovaArgs.push(`--buildConfig=${pathBuildConfig}`)
     if (device)
       cordovaArgs.push('--device')
     if (release)
       cordovaArgs.push('--verbose')
 
-    info(`executing "cordova build ${cordovaArgs.join(' ')}" in folder ${srcCordovaPath}`)
+    info(`executing "cordova ${cordovaArgs.join(' ')}" in folder ${srcCordovaPath}`)
     return spawn.sync('cordova', cordovaArgs, {
       cwd: srcCordovaPath,
       env: process.env,
@@ -190,7 +192,7 @@ module.exports = (api, options) => {
 
       cordovaClean()
 
-      cordovaRun(platform)
+      cordovaRun(platform, args.pathBuildConfig)
 
       return server
     } else {
@@ -212,7 +214,7 @@ module.exports = (api, options) => {
     // cordova clean
     await cordovaClean()
     // cordova build --release (if you want a build debug build, use cordovaBuild(platform, false)
-    await cordovaBuild(platform, args.release, args.device)
+    await cordovaBuild(platform, args.release, args.device, args.pathBuildConfig)
   }
 
   const runPrepare = async (args) => {
